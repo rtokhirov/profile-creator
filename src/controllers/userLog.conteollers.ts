@@ -9,7 +9,7 @@ export async function signup(req: Request, res: Response){
         if(email && password){
             const userLog = await userLogModel.create({email, password})
             const user = await userModel.create({log_id:userLog._id})
-            const token= jwt.sign({'log_id':userLog._id, email:userLog.email }, process.env.JWT_SECRET_KEY as string,{expiresIn:'30d'})
+            const token= jwt.sign({'log_id':userLog._id, email:userLog.email, user_id:user._id }, process.env.JWT_SECRET_KEY as string,{expiresIn:'30d'})
             res.status(201).json({
                 email: userLog.email,
                 token
@@ -27,8 +27,9 @@ export async function login(req: Request, res: Response){
         const{ email, password }=req.body
         if(email && password){
             const userLog = await userLogModel.findOne({email, password})
-            if (userLog) {
-                const token= jwt.sign({'log_id':userLog._id, email:userLog.email}, process.env.JWT_SECRET_KEY as string,{expiresIn:'30d'})
+            const user = await userModel.findOne({log_id: userLog?._id})
+            if (userLog && user) {
+                const token= jwt.sign({'log_id':userLog._id, email:userLog.email, user_id:user?._id }, process.env.JWT_SECRET_KEY as string,{expiresIn:'30d'})
                 res.status(201).json({
                     email: userLog.email,
                     token

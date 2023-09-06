@@ -19,7 +19,7 @@ export async function getProfile(req: Request, res: Response) {
 
 export async function updateProfile(req: Request, res: Response) {
   try {
-    const { first_name, last_name, email } = req.body;
+    const { first_name, last_name, email,image } = req.body;
     console.log({ first_name, last_name, email });
     
     if (first_name && last_name) {
@@ -27,6 +27,7 @@ export async function updateProfile(req: Request, res: Response) {
         { log_id: (req as customRequest).log_id },
         {
           first_name,
+          profile_photo:image,
           last_name,
           email,
         },
